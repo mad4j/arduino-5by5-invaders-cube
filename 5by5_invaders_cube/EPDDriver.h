@@ -1,18 +1,32 @@
 #pragma once
 
+/**
+ * Connection Table
+ * --------------------------
+ * E-Paper        Arduino UNO 
+ *  3.3V              3V3
+ *  GND               GND
+ *  DIN               D11
+ *  CLK               D13
+ *  CS                D10
+ *  DC                D9
+ *  RST               D8
+ *  BUSY              D7 
+ */
+
 
 #include <SPI.h>
 
 
 // Pin definition
-#define RST_PIN         8
-#define DC_PIN          9
-#define CS_PIN          10
-#define BUSY_PIN        7
+static const uint8_t DC_PIN = 9;
+static const uint8_t CS_PIN = 10;
+static const uint8_t BUSY_PIN = 7;
+static const uint8_t RST_PIN = 8;
 
 // Display resolution
-#define EPD_WIDTH       200
-#define EPD_HEIGHT      200
+static const uint16_t EPD_WIDTH = 200;
+static const uint16_t EPD_HEIGHT = 200;
 
 
 class EPDDriver 
@@ -28,16 +42,15 @@ public:
   static void sendData(uint8_t data);
 
   static void display(const uint8_t* frame_buffer);
-  static void displayGenerator(Generator& gen, uint16_t seed);
+  static void displayGenerator(Generator& gen, uint64_t seed);
   
   static void waitUntilIdle();
   static void reset();
   static void clear();
-  static void sleep();  
+  static void sleep();
 };
 
-
-EPDDriver::EPDDriver() 
+EPDDriver::EPDDriver()
 {
   
 }
@@ -58,11 +71,11 @@ void EPDDriver::init()
 
   SPI.begin();
   SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE0));
-  
+
   /* EPD hardware init start */
   reset();
-
   waitUntilIdle();
+
   sendCommand(0x12);  //SWRESET
   waitUntilIdle();
 
@@ -104,10 +117,11 @@ void EPDDriver::init()
 }
 
 
-void EPDDriver::spiTransfer(uint8_t data) {
-    digitalWrite(CS_PIN, LOW);
-    SPI.transfer(data);
-    digitalWrite(CS_PIN, HIGH);
+void EPDDriver::spiTransfer(uint8_t data) 
+{
+  digitalWrite(CS_PIN, LOW);
+  SPI.transfer(data);
+  digitalWrite(CS_PIN, HIGH);
 }
 
 
@@ -183,11 +197,11 @@ void EPDDriver::display(const uint8_t* frame_buffer)
 }
 
 
-void EPDDriver::displayGenerator(Generator& gen, uint16_t seed)
+void EPDDriver::displayGenerator(Generator& gen, uint64_t seed)
 {
+  gen.init(seed, EPD_WIDTH, EPD_HEIGHT);
 
-  gen.init(seed);
-  
+  sendCommand(0x24);
   for (int j = 0; j < EPD_HEIGHT; j++) {
     for (int i = 0; i < EPD_WIDTH; i+=8) {
       if (gen.generate(i, j) == 0) {
@@ -204,6 +218,7 @@ void EPDDriver::displayGenerator(Generator& gen, uint16_t seed)
   sendCommand(0x20);
   waitUntilIdle();
 }
+
 
 void EPDDriver::sleep()
 {
