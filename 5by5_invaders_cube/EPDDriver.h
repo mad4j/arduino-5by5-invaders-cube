@@ -2,8 +2,8 @@
 
 /**
  * Connection Table
- * --------------------------
- * E-Paper        Arduino UNO 
+ * ---------------------------------
+ * E-Paper        Arduino UNO / Nano
  *  3.3V              3V3
  *  GND               GND
  *  DIN               D11
@@ -19,14 +19,19 @@
 
 
 // Pin definition
-static const uint8_t DC_PIN = 9;
-static const uint8_t CS_PIN = 10;
+static const uint8_t DC_PIN   = 9;
+static const uint8_t CS_PIN   = 10;
 static const uint8_t BUSY_PIN = 7;
-static const uint8_t RST_PIN = 8;
+static const uint8_t RST_PIN  = 8;
 
 // Display resolution
 static const uint16_t EPD_WIDTH = 200;
 static const uint16_t EPD_HEIGHT = 200;
+
+
+static const uint8_t CMD_DRIVER_OUTPUT_CONTROL    = 0x01;
+static const uint8_t CMD_DATA_ENTRY_MODE_SETTINGS = 0x11;
+static const uint8_t CMD_SW_RESET                 = 0x12;
 
 
 class EPDDriver 
@@ -76,15 +81,15 @@ void EPDDriver::init()
   reset();
   waitUntilIdle();
 
-  sendCommand(0x12);  //SWRESET
+  sendCommand(CMD_SW_RESET);
   waitUntilIdle();
 
-  sendCommand(0x01); //Driver output control
+  sendCommand(CMD_DRIVER_OUTPUT_CONTROL);
   sendData(0xC7);
   sendData(0x00);
   sendData(0x01);
 
-  sendCommand(0x11); //data entry mode
+  sendCommand(CMD_DATA_ENTRY_MODE_SETTINGS);
   sendData(0x01);
 
   sendCommand(0x44); //set Ram-X address start/end position
