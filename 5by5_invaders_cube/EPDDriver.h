@@ -187,8 +187,8 @@ void EPDDriver::display(const uint8_t* frame_buffer)
 
   if (frame_buffer != NULL) {
     sendCommand(0x24);
-    for (int j = 0; j < h; j++) {
-      for (int i = 0; i < w; i++) {
+    for (auto j = 0; j < h; j++) {
+      for (auto i = 0; i < w; i++) {
         sendData(pgm_read_byte(&frame_buffer[i + j * w]));
       }
     }
@@ -207,9 +207,16 @@ void EPDDriver::displayGenerator(Generator& gen, uint64_t seed)
   gen.init(seed, EPD_WIDTH, EPD_HEIGHT);
 
   sendCommand(0x24);
-  for (int j = 0; j < EPD_HEIGHT; j++) {
-    for (int i = 0; i < EPD_WIDTH; i+=8) {
-      if (gen.generate(i, j) == 0) {
+  for (auto j = 0; j < EPD_HEIGHT; j++) {
+    for (auto i = 0; i < EPD_WIDTH; i+=8) {
+
+#ifdef ROTATE_CLOCKWISE
+      auto k = gen.generate(j, EPD_WIDTH-i-1);
+#else
+      auto k = gen.generate(i, j)
+#endif
+ 
+      if (k == 0) {
         sendData(0x00);
       } else {
         sendData(0xFF);

@@ -1,4 +1,7 @@
 
+#undef DEBUG
+#define ROTATE_CLOCKWISE
+
 #include "Generators.h"
 #include "EPDDriver.h"
 
@@ -7,7 +10,6 @@ static const uint8_t UPDATE_EVERY_MININUTES = 10;
 InvadersGen invGen;
 
 static uint16_t counter = 0;
-
 
 void setup() 
 {
