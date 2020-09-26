@@ -34,10 +34,18 @@ static const uint8_t RST_PIN  = 8;
 static const uint16_t EPD_WIDTH = 200;
 static const uint16_t EPD_HEIGHT = 200;
 
-
-static const uint8_t CMD_DRIVER_OUTPUT_CONTROL    = 0x01;
-static const uint8_t CMD_DATA_ENTRY_MODE_SETTINGS = 0x11;
-static const uint8_t CMD_SW_RESET                 = 0x12;
+// Commands
+static const uint8_t CMD_DRIVER_OUTPUT_CONTROL                = 0x01;
+static const uint8_t CMD_DATA_ENTRY_MODE_SETTINGS             = 0x11;
+static const uint8_t CMD_SW_RESET                             = 0x12;
+static const uint8_t CMD_MASTER_ACTIVATION                    = 0x20;
+static const uint8_t CMD_DISPLAY_UPDATE_CONTROL_1             = 0x21;
+static const uint8_t CMD_DISPLAY_UPDATE_CONTROL_2             = 0x22;
+static const uint8_t CMD_BORDER_WAVEFORM_CONTROL              = 0x3C; 
+static const uint8_t CMD_SET_RAM_X_ADDRESS_START_END_POSITION = 0x44;
+static const uint8_t CMD_SET_RAM_Y_ADDRESS_START_END_POSITION = 0x45;
+static const uint8_t CMD_SET_RAM_X_ADDRESS_COUNTER            = 0x4E;
+static const uint8_t CMD_SET_RAM_Y_ADDRESS_COUNTER            = 0x4F; 
 
 
 class EPDDriver 
@@ -98,31 +106,34 @@ void EPDDriver::init()
   sendCommand(CMD_DATA_ENTRY_MODE_SETTINGS);
   sendData(0x01);
 
-  sendCommand(0x44); //set Ram-X address start/end position
+  sendCommand(CMD_SET_RAM_X_ADDRESS_START_END_POSITION); //set Ram-X address start/end position
   sendData(0x00);
   sendData(0x18);    //0x0C-->(18+1)*8=200
 
-  sendCommand(0x45); //set Ram-Y address start/end position
+  sendCommand(CMD_SET_RAM_Y_ADDRESS_START_END_POSITION); //set Ram-Y address start/end position
   sendData(0xC7);   //0xC7-->(199+1)=200
   sendData(0x00);
   sendData(0x00);
   sendData(0x00);
 
-  sendCommand(0x3C); //BorderWavefrom
+  sendCommand(CMD_BORDER_WAVEFORM_CONTROL); //BorderWavefrom
   sendData(0x01);
 
-  sendCommand(0x18);
+  sendCommand(0x18); //Read built-in temperature sensor
   sendData(0x80);
 
-  sendCommand(0x22); // //Load Temperature and waveform setting.
-  sendData(0XB1);
-  sendCommand(0x20);
+  sendCommand(CMD_DISPLAY_UPDATE_CONTROL_2); 
+  sendData(0XB1);  //Load Temperature and waveform setting.
+  
+  sendCommand(CMD_MASTER_ACTIVATION);
 
-  sendCommand(0x4E);   // set RAM x address count to 0;
+  sendCommand(CMD_SET_RAM_X_ADDRESS_COUNTER);   // set RAM x address count to 0;
   sendData(0x00);
-  sendCommand(0x4F);   // set RAM y address count to 0X199;
+  
+  sendCommand(CMD_SET_RAM_Y_ADDRESS_COUNTER);   // set RAM y address count to 0X199;
   sendData(0xC7);
   sendData(0x00);
+  
   waitUntilIdle();
   /* EPD hardware init end */
 }
