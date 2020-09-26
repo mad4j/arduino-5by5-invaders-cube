@@ -1,6 +1,9 @@
 #pragma once
 
 /**
+ * Waveshare 1.54 E-Ink diplay
+ * ---------------------------------
+ * 
  * Connection Table
  * ---------------------------------
  * E-Paper        Arduino UNO / Nano
@@ -14,6 +17,9 @@
  *  BUSY              D7 
  */
 
+
+//TBV verify color invertion when clearing/refreshing
+//TBV display rotation a driver level
 
 #include <SPI.h>
 

@@ -1,5 +1,5 @@
 
-#undef DEBUG
+#define DEBUG
 #define DISPLAY_ROTATION
 
 #include "Generators.h"
@@ -12,50 +12,46 @@ static const uint8_t UPDATE_EVERY_MININUTES = 10;
 static const uint8_t QRCODE_FREQUENCY       = 10;
 
 
+//cool pattern generator
 InvadersGen invGen;
-static uint16_t counter = 0;
 
 
 void setup() 
 {
 #ifdef DEBUG
   Serial.begin(115200);
-  Serial.println("START");
+  Serial.println("SETUP");
 #endif
-  
-  randomSeed(analogRead(0));
 }
 
 
 void loop() 
 { 
-  EPDDriver::init();
-  
-  if ((counter++ % 10) == 0)  {
-#ifdef DEBUG    
-    Serial.println("Clear");
-#endif  
-    EPDDriver::clear();
-  }
-  
-  uint64_t seed = random(INT32_MAX);
-  
 #ifdef DEBUG
-  Serial.print("Draw: ");
-  Serial.println((long)seed, 16);
+  Serial.println("LOOP");
 #endif
 
+  //reint random generator
+  randomSeed(analogRead(0));
+
+  //reinit display
+  EPDDriver::init();
+  EPDDriver::clear();
+  
+  //draw something cool
   if (random(QRCODE_FREQUENCY) == 0) {
+    
+    //display QR code
     EPDDriver::display(QR_IMAGE);
+    
   } else {
+    
+    //display a random pattern
+    uint64_t seed = random(INT32_MAX);
     EPDDriver::displayGenerator(invGen, seed);
   }
-  
-#ifdef DEBUG  
-  Serial.println("Sleep");
-#endif 
 
+  //go slepping
   EPDDriver::sleep();
-
   delay(UPDATE_EVERY_MININUTES*60*1000L);
 }
