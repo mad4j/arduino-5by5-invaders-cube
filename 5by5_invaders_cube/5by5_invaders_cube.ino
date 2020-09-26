@@ -9,9 +9,10 @@
 
 
 static const uint8_t UPDATE_EVERY_MININUTES = 10;
+static const uint8_t QRCODE_FREQUENCY       = 10;
+
 
 InvadersGen invGen;
-
 static uint16_t counter = 0;
 
 
@@ -28,8 +29,6 @@ void setup()
 
 void loop() 
 { 
-
-
   EPDDriver::init();
   
   if ((counter++ % 10) == 0)  {
@@ -46,7 +45,7 @@ void loop()
   Serial.println((long)seed, 16);
 #endif
 
-  if (random(10) == 0) {
+  if (random(QRCODE_FREQUENCY) == 0) {
     EPDDriver::display(QR_IMAGE);
   } else {
     EPDDriver::displayGenerator(invGen, seed);
