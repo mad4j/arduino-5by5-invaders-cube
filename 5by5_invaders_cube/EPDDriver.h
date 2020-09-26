@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * Waveshare 1.54 E-Ink diplay
+ * Waveshare 1.54 E-Ink diplay V2
  * ---------------------------------
  * 
  * Connection Table
@@ -190,9 +190,9 @@ void EPDDriver::clear()
   }
 
   //DISPLAY REFRESH
-  sendCommand(0x22);
+  sendCommand(CMD_DISPLAY_UPDATE_CONTROL_2);
   sendData(0xC7);
-  sendCommand(0x20);
+  sendCommand(CMD_MASTER_ACTIVATION);
   waitUntilIdle();
 }
 
@@ -212,9 +212,9 @@ void EPDDriver::display(const uint8_t* frame_buffer)
   }
 
   //DISPLAY REFRESH
-  sendCommand(0x22);
+  sendCommand(CMD_DISPLAY_UPDATE_CONTROL_2);
   sendData(0xF7);
-  sendCommand(0x20);
+  sendCommand(CMD_MASTER_ACTIVATION);
   waitUntilIdle();
 }
 
@@ -227,24 +227,25 @@ void EPDDriver::displayGenerator(Generator& gen, uint64_t seed)
   for (auto j = 0; j < EPD_HEIGHT; j++) {
     for (auto i = 0; i < EPD_WIDTH; i+=8) {
 
+      uint8_t bits = 0;
+      for (auto k=0; k<8; k++) {
 #ifdef DISPLAY_ROTATION
-      auto k = gen.generate(j, i);
+        auto b = gen.generate(j, i+k);
 #else
-      auto k = gen.generate(i, j)
+        auto b = gen.generate(i+k, j);
 #endif
- 
-      if (k == 0) {
-        sendData(0x00);
-      } else {
-        sendData(0xFF);
+        bits <<= 1;
+        bits |= (b&0x01);
       }
+  
+      sendData(bits);
     }
   }
   
   //DISPLAY REFRESH
-  sendCommand(0x22);
+  sendCommand(CMD_DISPLAY_UPDATE_CONTROL_2);
   sendData(0xC7);
-  sendCommand(0x20);
+  sendCommand(CMD_MASTER_ACTIVATION);
   waitUntilIdle();
 }
 
