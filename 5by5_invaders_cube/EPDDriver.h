@@ -210,8 +210,8 @@ void EPDDriver::displayGenerator(Generator& gen, uint64_t seed)
   for (auto j = 0; j < EPD_HEIGHT; j++) {
     for (auto i = 0; i < EPD_WIDTH; i+=8) {
 
-#ifdef ROTATE_CLOCKWISE
-      auto k = gen.generate(j, EPD_WIDTH-i-1);
+#ifdef DISPLAY_ROTATION
+      auto k = gen.generate(j, i);
 #else
       auto k = gen.generate(i, j)
 #endif

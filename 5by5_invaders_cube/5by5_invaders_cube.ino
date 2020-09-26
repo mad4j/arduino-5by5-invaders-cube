@@ -1,15 +1,19 @@
 
 #undef DEBUG
-#define ROTATE_CLOCKWISE
+#define DISPLAY_ROTATION
 
 #include "Generators.h"
 #include "EPDDriver.h"
+
+#include "qrlogo.h"
+
 
 static const uint8_t UPDATE_EVERY_MININUTES = 10;
 
 InvadersGen invGen;
 
 static uint16_t counter = 0;
+
 
 void setup() 
 {
@@ -24,11 +28,14 @@ void setup()
 
 void loop() 
 { 
+
+
+  EPDDriver::init();
+  
   if ((counter++ % 10) == 0)  {
 #ifdef DEBUG    
     Serial.println("Clear");
-#endif
-    EPDDriver::init();
+#endif  
     EPDDriver::clear();
   }
   
@@ -38,9 +45,12 @@ void loop()
   Serial.print("Draw: ");
   Serial.println((long)seed, 16);
 #endif
-  
-  EPDDriver::init();
-  EPDDriver::displayGenerator(invGen, seed);
+
+  if (random(10) == 0) {
+    EPDDriver::display(QR_IMAGE);
+  } else {
+    EPDDriver::displayGenerator(invGen, seed);
+  }
   
 #ifdef DEBUG  
   Serial.println("Sleep");
