@@ -9,7 +9,7 @@
 
 
 static const uint8_t UPDATE_EVERY_MININUTES = 10;
-static const uint8_t QRCODE_FREQUENCY       = 10;
+static const uint8_t QRCODE_FREQUENCY       = 25;
 
 
 //cool pattern generator
@@ -31,7 +31,7 @@ void loop()
   Serial.println("LOOP");
 #endif
 
-  //reint random generator
+  //reinit random generator
   randomSeed(analogRead(0));
 
   //reinit display
