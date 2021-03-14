@@ -8,5 +8,5 @@
  *  VCC                5V
  *  SDA                A4
  *  SCL                A5
- *  SQW               TBD
+ *  SQW                D2
  */

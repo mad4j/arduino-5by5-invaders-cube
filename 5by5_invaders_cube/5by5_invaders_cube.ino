@@ -2,37 +2,90 @@
 #define DEBUG
 #define DISPLAY_ROTATION
 
+#include <Wire.h>
+#include <avr/sleep.h>
+
+#include "DS3231.h"
+
 #include "Generators.h"
 #include "EPDDriver.h"
 
 #include "qrlogo.h"
 
 
-static const uint8_t UPDATE_EVERY_MININUTES = 10;
+static const uint8_t UPDATE_EVERY_MININUTES = 20;
 static const uint8_t QRCODE_FREQUENCY       = 25;
 
 
 //cool pattern generator
 InvadersGen invGen;
 
+//access to real-time clock functions
+DS3231 RTC;
+
+
+void initRTC(byte control, bool which)
+{
+  Wire.beginTransmission(0x68);
+
+  Wire.write((which) ? 0x0f : 0x0e); 
+  Wire.write(control);
+  
+  Wire.endTransmission();
+}
+
+void wakeup()
+{
+  //wakeup and disable interrupt to avoid loops
+  sleep_disable();
+}
+
+void gosleep()
+{
+
+  //empty serial buffer before going in sleep mode
+  Serial.flush();
+  
+  sleep_enable();
+  delay(100);
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+  cli();
+  sleep_bod_disable();
+  sei();
+  sleep_cpu();
+
+  // *** WAKE HAPPENS HERE *** ///
+
+  RTC.clearAlarm1();
+}
+
 
 void setup() 
 {
-#ifdef DEBUG
-  Serial.begin(115200);
-  Serial.println("SETUP");
-#endif
+  Serial.begin(9600);
+
+  //reinit random generator
+  randomSeed(analogRead(0));
+
+  //DS3231 library initialization
+  Wire.begin();
+  RTC.begin();
+  initRTC(0b11110111, false);
+
+  RTC.armAlarm1(false);
+  RTC.armAlarm2(false);
+  RTC.clearAlarm1();
+  RTC.clearAlarm2();
+
+  //seup wakeup interrupt
+  pinMode(2, INPUT);
+  attachInterrupt(0, wakeup, FALLING);
 }
 
 
 void loop() 
 { 
-#ifdef DEBUG
   Serial.println("LOOP");
-#endif
-
-  //reinit random generator
-  randomSeed(analogRead(0));
 
   //reinit display
   EPDDriver::init();
@@ -53,5 +106,19 @@ void loop()
 
   //go slepping
   EPDDriver::sleep();
-  delay(UPDATE_EVERY_MININUTES*60*1000L);
+
+  // set and arm alarm1 on RTC
+  RTC.setDateTime(2021, 3, 14, 0, 0, 0);
+  RTC.setAlarm1(0, UPDATE_EVERY_MININUTES / 60, UPDATE_EVERY_MININUTES % 60, 0, DS3231_MATCH_M_S);
+  delay(100);
+
+  gosleep();
+
+  /// *** RESUME LOOP FROM HERE *** ///
+
+  //char print_date[16];
+  //RTCDateTime dt = RTC.getDateTime();
+  //sprintf(print_date, "%02d/%02d/%d %02d:%02d:%02d", dt.day, dt.month, dt.year, dt.hour, dt.minute, dt.second);
+  Serial.println("TEST");
+  //Serial.println(print_date);
 }
