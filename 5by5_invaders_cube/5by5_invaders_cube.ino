@@ -58,6 +58,8 @@ void gosleep()
 
 void setup() 
 {
+  Serial.begin(9600);
+  
   //reinit random generator
   randomSeed(analogRead(0));
 
@@ -74,13 +76,18 @@ void setup()
   //seup wakeup interrupt
   pinMode(2, INPUT);
   attachInterrupt(0, wakeup, FALLING);
+
+  //reinit display
+  EPDDriver::init();
 }
 
 
 void loop() 
 { 
-  //reinit display
-  EPDDriver::init();
+
+  Serial.println("LOOP");
+  
+  // clear display
   EPDDriver::clear();
   
   //draw something cool
@@ -104,7 +111,12 @@ void loop()
   RTC.setAlarm1(0, UPDATE_EVERY_MININUTES / 60, UPDATE_EVERY_MININUTES % 60, 0, DS3231_MATCH_M_S);
   delay(100);
 
+  Serial.flush();
+  Serial.end();
+
   gosleep();
 
   /// *** RESUME LOOP FROM HERE *** ///
+
+  Serial.begin(9600);
 }
