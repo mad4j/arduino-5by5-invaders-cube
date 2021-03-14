@@ -42,10 +42,6 @@ void wakeup()
 
 void gosleep()
 {
-
-  //empty serial buffer before going in sleep mode
-  Serial.flush();
-  
   sleep_enable();
   delay(100);
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
@@ -62,8 +58,6 @@ void gosleep()
 
 void setup() 
 {
-  Serial.begin(9600);
-
   //reinit random generator
   randomSeed(analogRead(0));
 
@@ -85,8 +79,6 @@ void setup()
 
 void loop() 
 { 
-  Serial.println("LOOP");
-
   //reinit display
   EPDDriver::init();
   EPDDriver::clear();
@@ -115,10 +107,4 @@ void loop()
   gosleep();
 
   /// *** RESUME LOOP FROM HERE *** ///
-
-  //char print_date[16];
-  //RTCDateTime dt = RTC.getDateTime();
-  //sprintf(print_date, "%02d/%02d/%d %02d:%02d:%02d", dt.day, dt.month, dt.year, dt.hour, dt.minute, dt.second);
-  Serial.println("TEST");
-  //Serial.println(print_date);
 }
