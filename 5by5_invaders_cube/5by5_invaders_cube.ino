@@ -76,9 +76,6 @@ void setup()
   //seup wakeup interrupt
   pinMode(2, INPUT);
   attachInterrupt(0, wakeup, FALLING);
-
-  //reinit display
-  EPDDriver::init();
 }
 
 
@@ -87,7 +84,8 @@ void loop()
 
   Serial.println("LOOP");
   
-  // clear display
+  //reinit display
+  EPDDriver::init();
   EPDDriver::clear();
   
   //draw something cool
