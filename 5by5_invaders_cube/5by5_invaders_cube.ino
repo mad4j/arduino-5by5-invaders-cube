@@ -15,17 +15,19 @@
 static const uint8_t UPDATE_EVERY_MININUTES = 20;
 static const uint8_t QRCODE_FREQUENCY       = 25;
 
-static const uint8_t MAX_GENERATORS         = 2;
+static const uint8_t MAX_GENERATORS         = 3;
 
 
 //cool pattern generators
 
 InvadersGen invGen;
 TileGen mazeGen(MAZE_TILESET , MAZE_TILESET_SIZE);
+TileGen waveGen(WAVE_TILESET , WAVE_TILESET_SIZE);
 
 Generator* generators[] = {
   &invGen,
-  &mazeGen
+  &mazeGen,
+  &waveGen
 };
 
 void setup() 

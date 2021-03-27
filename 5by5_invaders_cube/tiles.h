@@ -24,20 +24,37 @@ static const unsigned char BACKSLASH_TILE[TILE_X] PROGMEM = {
   0b00000111,
   0b00000011
 }; 
-/*
-static const unsigned char BACKSLASH_TILE[TILE_X] PROGMEM = {
-  0b00000000,
-  0b00000000,
-  0b00000011,
-  0b00000011,
-  0b00001100,
-  0b00001100,
+
+static const unsigned char WAVELEFT_TILE[TILE_X] PROGMEM = {
+  0b00011000,
+  0b00011000,
   0b00110000,
-  0b00110000
+  0b11100011,
+  0b11000111,
+  0b00001100,
+  0b00011000,
+  0b00011000
 }; 
-*/
+
+static const unsigned char WAVERIGHT_TILE[TILE_X] PROGMEM = {
+  0b00011000,
+  0b00011000,
+  0b00001100,
+  0b11000111,
+  0b11100011,
+  0b00110000,
+  0b00011000,
+  0b00011000
+};
+
 static const uint8_t MAZE_TILESET_SIZE = 2;
 static const uint8_t* MAZE_TILESET[] = {
   SLASH_TILE,
   BACKSLASH_TILE
+};
+
+static const uint8_t WAVE_TILESET_SIZE = 2;
+static const uint8_t* WAVE_TILESET[] = {
+  WAVELEFT_TILE,
+  WAVERIGHT_TILE
 };
