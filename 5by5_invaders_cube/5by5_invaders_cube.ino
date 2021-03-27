@@ -22,12 +22,12 @@ static const uint8_t MAX_GENERATORS         = 3;
 
 InvadersGen invGen;
 TileGen mazeGen(MAZE_TILESET , MAZE_TILESET_SIZE, 1);
-//TileGen waveGen(WAVE_TILESET , WAVE_TILESET_SIZE, 2);
+TileGen waveGen(WAVE_TILESET , WAVE_TILESET_SIZE, 1);
 
 Generator* generators[] = {
   &invGen,
   &mazeGen,
-//  &waveGen
+  &waveGen
 };
 
 void setup() 
