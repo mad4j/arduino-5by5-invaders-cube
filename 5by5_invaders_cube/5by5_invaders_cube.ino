@@ -17,8 +17,10 @@ static const uint8_t QRCODE_FREQUENCY       = 25;
 
 static const uint8_t MAX_GENERATORS         = 3;
 
+static const uint8_t DONE_PIN               = 2;
 
-//cool pattern generators
+
+//vcool pattern generators
 
 InvadersGen invGen;
 TileGen mazeGen(MAZE_TILESET , MAZE_TILESET_SIZE, 1);
@@ -32,35 +34,45 @@ Generator* generators[] = {
 
 void setup() 
 {
+  // initialize serial port for debug
   Serial.begin(9600);
   
-  //reinit random generator
+  // reinit random generator
   randomSeed(analogRead(0));
+
+  // DONE pin on low-power timer
+  pinMode(DONE_PIN, OUTPUT);
 }
 
 
 void loop() 
 {   
-  //reinit display
+  // reinit and clear display
   EPDDriver::init();
-  //EPDDriver::clear();
-  
-  //draw something cool
+
+  // draw something cool
   if (random(QRCODE_FREQUENCY) == 0) {
     
-    //display QR code
+    // display QR code
     EPDDriver::display(QR_IMAGE);
     
   } else {
     
-    //display a random pattern
+    // display a random pattern
     uint64_t seed = random(INT32_MAX);
     EPDDriver::displayGenerator(*generators[random(MAX_GENERATORS)], seed);
   }
 
-  //go slepping
+  // go slepping
   EPDDriver::sleep();
 
+  // wait a while
+  delay(500);
+
+  // switch power off
+  digitalWrite(DONE_PIN, HIGH);
+
+  // do nothing while switching
   delay(60000);
 
 }
