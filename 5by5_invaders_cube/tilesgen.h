@@ -1,11 +1,10 @@
 #pragma once
+class TilesGen : public Generator {
 
-class TileGen : public Generator {
 
 public:
 
-
-  TileGen(uint16_t** tiles, uint8_t max_tiles, uint8_t zoom) :
+  TilesGen(uint16_t** tiles, uint8_t max_tiles, uint8_t zoom) :
     _tiles(tiles),
     _max_tiles(max_tiles),
     _zoom(zoom),
@@ -18,7 +17,7 @@ public:
   }
 
     
-  ~TileGen() 
+  ~TilesGen() 
   {
     if (_tile_map != 0) {
       delete[] _tile_map;

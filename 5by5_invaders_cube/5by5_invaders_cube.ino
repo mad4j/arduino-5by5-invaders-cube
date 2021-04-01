@@ -7,27 +7,31 @@
 
 #include "generators.h"
 #include "invadergen.h"
-#include "tilegen.h"
+#include "tilesgen.h"
+#include "linesgen.h"
+#include "fracgen.h"
 
 #include "EPDDriver.h"
 
 
+static const uint8_t DONE_PIN               = 2;
+
 static const uint8_t UPDATE_EVERY_MININUTES = 20;
 static const uint8_t QRCODE_FREQUENCY       = 25;
 
-static const uint8_t MAX_GENERATORS         = 3;
-
-static const uint8_t DONE_PIN               = 2;
+static const uint8_t MAX_GENERATORS         = 4;
 
 
-//vcool pattern generators
+// cool pattern generators
 
 InvadersGen invGen;
-TileGen mazeGen(MAZE_TILESET , MAZE_TILESET_SIZE, 1);
-TileGen waveGen(WAVE_TILESET , WAVE_TILESET_SIZE, 1);
+FracGen fracGen;
+TilesGen mazeGen(MAZE_TILESET , MAZE_TILESET_SIZE, 1);
+TilesGen waveGen(WAVE_TILESET , WAVE_TILESET_SIZE, 1);
 
 Generator* generators[] = {
   &invGen,
+  &fracGen,
   &mazeGen,
   &waveGen
 };
