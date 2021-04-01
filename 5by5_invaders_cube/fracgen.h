@@ -32,9 +32,6 @@ public:
     while (height > _dy) {
       _dy *= 3;
     }
-
-    Serial.println(_dx);
-    Serial.println(_dy);
     
     _dx = (_dx - width) / 2;
     _dy = (_dy - height) / 2;
