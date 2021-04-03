@@ -17,8 +17,6 @@
  *  BUSY              D7 
  */
 
-
-//TBV verify color invertion when clearing/refreshing
 //TBV display rotation a driver level
 
 #include <SPI.h>
