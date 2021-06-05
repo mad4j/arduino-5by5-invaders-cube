@@ -1,5 +1,8 @@
 # arduino-5by5-invaders-cube
 
+## Notes
+* Target: Arduino Nano
+
 ## Generators
 * Invaders
 * Trebouchet
